@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    environment: ${{ vars.DEPLOYMENT_ENVIRONMENT || 'production' }}
 
     env:
       IMAGE_NAME: ${{ vars.IMAGE_NAME || 'deep-research' }}

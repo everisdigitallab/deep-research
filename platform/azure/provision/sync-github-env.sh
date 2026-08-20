@@ -71,6 +71,18 @@ require_env AZURE_FILE_SHARE_NAME
 require_env AZURE_CONTAINER_APP_STORAGE_NAME
 require_env APP_BASE_URL
 
+set_repository_variable() {
+  local name="$1"
+  local value="$2"
+  gh variable set "${name}" --repo "${GITHUB_REPOSITORY}" --body "${value}"
+}
+
+if [[ -n "${GITHUB_ENVIRONMENT}" ]]; then
+  # This selector must be repository-scoped so the job can choose the
+  # environment before resolving its environment-scoped credentials.
+  set_repository_variable DEPLOYMENT_ENVIRONMENT "${GITHUB_ENVIRONMENT}"
+fi
+
 set_secret() {
   local name="$1"
   local value="$2"
