@@ -57,6 +57,8 @@ jobs:
           context: webapp
           file: webapp/Dockerfile.fullstack
           platforms: linux/amd64
+          build-args: |
+            NEXT_PUBLIC_GPTR_API_URL=${{ vars.NEXT_PUBLIC_GPTR_API_URL }}
           push: true
           tags: |
             ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
