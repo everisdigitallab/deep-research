@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 DEFAULT_ENV_FILE="${ROOT_DIR}/ci/.env.github-sync.local"
 FALLBACK_ENV_FILE="${ROOT_DIR}/ci/.env.github-sync.example"
+WEBAPP_ENV_FILE="${WEBAPP_ENV_FILE:-${ROOT_DIR}/webapp/.env}"
 
 if [[ -f "${DEFAULT_ENV_FILE}" ]]; then
   set -a
@@ -15,6 +16,15 @@ elif [[ -f "${FALLBACK_ENV_FILE}" ]]; then
   set -a
   # shellcheck disable=SC1090
   source "${FALLBACK_ENV_FILE}"
+  set +a
+fi
+
+# Keep runtime credentials local, then promote their values to GitHub below.
+# The .env file is intentionally never copied into the repository or image.
+if [[ -f "${WEBAPP_ENV_FILE}" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "${WEBAPP_ENV_FILE}"
   set +a
 fi
 
@@ -139,6 +149,26 @@ set_variable_if_value STATIC_API_TEMPLATE "${STATIC_API_TEMPLATE:-}"
 set_variable AZURE_CONTAINER_PORT "${AZURE_CONTAINER_PORT:-3000}"
 set_variable AZURE_HEALTHCHECK_PATH "${AZURE_HEALTHCHECK_PATH:-/api/health}"
 set_variable_if_value DATABASE_PROVIDER "${DATABASE_PROVIDER:-}"
+set_variable_if_value OPENAI_BASE_URL "${OPENAI_BASE_URL:-}"
+set_variable_if_value ENDPOINT_URL "${ENDPOINT_URL:-}"
+set_variable_if_value DEPLOYMENT_NAME "${DEPLOYMENT_NAME:-}"
+set_variable_if_value AZURE_OPENAI_ENDPOINT "${AZURE_OPENAI_ENDPOINT:-}"
+set_variable_if_value AZURE_OPENAI_API_VERSION "${AZURE_OPENAI_API_VERSION:-}"
+set_variable_if_value AZURE_API_VERSION "${AZURE_API_VERSION:-}"
+set_variable_if_value FAST_LLM "${FAST_LLM:-}"
+set_variable_if_value SMART_LLM "${SMART_LLM:-}"
+set_variable_if_value STRATEGIC_LLM "${STRATEGIC_LLM:-}"
+set_variable_if_value EMBEDDING "${EMBEDDING:-}"
+set_variable_if_value DOC_PATH "${DOC_PATH:-}"
+set_variable_if_value MAX_SCRAPER_WORKERS "${MAX_SCRAPER_WORKERS:-}"
+set_variable_if_value SCRAPER_RATE_LIMIT_DELAY "${SCRAPER_RATE_LIMIT_DELAY:-}"
+set_variable_if_value COMPRESSION_THRESHOLD "${COMPRESSION_THRESHOLD:-}"
+set_variable_if_value LANGCHAIN_TRACING_V2 "${LANGCHAIN_TRACING_V2:-}"
+set_variable_if_value LANGCHAIN_ENDPOINT "${LANGCHAIN_ENDPOINT:-}"
+set_variable_if_value LANGCHAIN_PROJECT "${LANGCHAIN_PROJECT:-}"
+set_variable_if_value FAST_TOKEN_LIMIT "${FAST_TOKEN_LIMIT:-}"
+set_variable_if_value SMART_TOKEN_LIMIT "${SMART_TOKEN_LIMIT:-}"
+set_variable_if_value STRATEGIC_TOKEN_LIMIT "${STRATEGIC_TOKEN_LIMIT:-}"
 
 if [[ "${APP_MODE}" != "static-web" ]]; then
   set_variable AZURE_POSTGRES_SERVER_NAME "${AZURE_POSTGRES_SERVER_NAME}"
@@ -154,6 +184,11 @@ fi
 echo "Setting GitHub Secrets on ${GITHUB_REPOSITORY}${GITHUB_ENVIRONMENT:+ (environment: ${GITHUB_ENVIRONMENT})}..."
 set_secret AZURE_CREDENTIALS "${AZURE_CREDENTIALS}"
 set_secret APP_BASE_URL "${APP_BASE_URL}"
+set_secret_if_value OPENAI_API_KEY "${OPENAI_API_KEY:-}"
+set_secret_if_value TAVILY_API_KEY "${TAVILY_API_KEY:-}"
+set_secret_if_value XQUIK_API_KEY "${XQUIK_API_KEY:-}"
+set_secret_if_value AZURE_OPENAI_API_KEY "${AZURE_OPENAI_API_KEY:-}"
+set_secret_if_value LANGCHAIN_API_KEY "${LANGCHAIN_API_KEY:-}"
 if [[ "${APP_MODE}" != "static-web" ]]; then
   set_secret ADMIN_BOOTSTRAP_TOKEN "${ADMIN_BOOTSTRAP_TOKEN}"
   set_secret DATABASE_URL "${DATABASE_URL}"

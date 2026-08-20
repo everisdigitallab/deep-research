@@ -87,6 +87,10 @@ jobs:
                   value: "${{ secrets.TAVILY_API_KEY }}"
                 - name: azure-openai-api-key
                   value: "${{ secrets.AZURE_OPENAI_API_KEY }}"
+                - name: xquik-api-key
+                  value: "${{ secrets.XQUIK_API_KEY }}"
+                - name: langchain-api-key
+                  value: "${{ secrets.LANGCHAIN_API_KEY }}"
             template:
               containers:
                 - name: deep-research
@@ -98,6 +102,10 @@ jobs:
                       secretRef: tavily-api-key
                     - name: AZURE_OPENAI_API_KEY
                       secretRef: azure-openai-api-key
+                    - name: XQUIK_API_KEY
+                      secretRef: xquik-api-key
+                    - name: LANGCHAIN_API_KEY
+                      secretRef: langchain-api-key
                     - name: OPENAI_BASE_URL
                       value: "${{ vars.OPENAI_BASE_URL }}"
                     - name: ENDPOINT_URL
@@ -118,6 +126,26 @@ jobs:
                       value: "${{ vars.STRATEGIC_LLM }}"
                     - name: EMBEDDING
                       value: "${{ vars.EMBEDDING }}"
+                    - name: DOC_PATH
+                      value: "${{ vars.DOC_PATH }}"
+                    - name: MAX_SCRAPER_WORKERS
+                      value: "${{ vars.MAX_SCRAPER_WORKERS }}"
+                    - name: SCRAPER_RATE_LIMIT_DELAY
+                      value: "${{ vars.SCRAPER_RATE_LIMIT_DELAY }}"
+                    - name: COMPRESSION_THRESHOLD
+                      value: "${{ vars.COMPRESSION_THRESHOLD }}"
+                    - name: LANGCHAIN_TRACING_V2
+                      value: "${{ vars.LANGCHAIN_TRACING_V2 }}"
+                    - name: LANGCHAIN_ENDPOINT
+                      value: "${{ vars.LANGCHAIN_ENDPOINT }}"
+                    - name: LANGCHAIN_PROJECT
+                      value: "${{ vars.LANGCHAIN_PROJECT }}"
+                    - name: FAST_TOKEN_LIMIT
+                      value: "${{ vars.FAST_TOKEN_LIMIT }}"
+                    - name: SMART_TOKEN_LIMIT
+                      value: "${{ vars.SMART_TOKEN_LIMIT }}"
+                    - name: STRATEGIC_TOKEN_LIMIT
+                      value: "${{ vars.STRATEGIC_TOKEN_LIMIT }}"
                   resources:
                     cpu: ${{ env.AZURE_CONTAINER_CPU }}
                     memory: "${{ env.AZURE_CONTAINER_MEMORY }}Gi"
