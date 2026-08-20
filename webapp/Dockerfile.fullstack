@@ -4,6 +4,9 @@
 FROM node:slim AS frontend-builder
 WORKDIR /app/frontend/nextjs
 
+ARG NEXT_PUBLIC_GPTR_API_URL
+ENV NEXT_PUBLIC_GPTR_API_URL=${NEXT_PUBLIC_GPTR_API_URL}
+
 # Copy package files and install dependencies
 COPY frontend/nextjs/package.json frontend/nextjs/package-lock.json* ./
 RUN npm install --legacy-peer-deps

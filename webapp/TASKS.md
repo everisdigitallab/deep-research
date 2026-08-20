@@ -4,6 +4,14 @@ Este arquivo registra tarefas realizadas, estado atual do ambiente e próximos p
 
 ## Concluído
 
+### Deploy Azure do Deep Research
+
+- O workflow do Azure foi refeito para publicar somente a aplicacao em `webapp/`.
+- A imagem agora usa `webapp/Dockerfile.fullstack` com `webapp/` como contexto de build.
+- Removidas do workflow as etapas do runtime de exemplo em `app/`, incluindo validacao PostgreSQL e a tela de login por token.
+- O Container App passa a expor o proxy full-stack do Deep Research na porta `3000` com health check em `/`.
+- O sync de GitHub agora promove as credenciais de `webapp/.env` para GitHub Secrets e as configuracoes nao sensiveis para GitHub Variables, para que o Container App as receba sem incluir o arquivo no build.
+
 ### Configuração Azure OpenAI
 
 - Adicionado suporte de compatibilidade para variáveis de ambiente no formato:
