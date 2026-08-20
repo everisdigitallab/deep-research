@@ -1,0 +1,29 @@
+[
+  {
+    "date": "2026-08-11",
+    "scope": "page-refinement",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "light / geometric-sans / cool",
+    "enrichment": "generated radar illustration",
+    "brief": "Balanced Technology Radar layout with colored action rail and generated signal-map visual"
+  },
+  {
+    "date": "2026-08-11",
+    "scope": "page-refinement",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "light / geometric-sans / cool",
+    "enrichment": "accessible SVG radar map",
+    "brief": "Tally-inspired interaction and board refinement for IC Technology Radar"
+  },
+  {
+    "date": "2026-08-11",
+    "scope": "app",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "light / geometric-sans / cool",
+    "enrichment": "none",
+    "brief": "NTT DATA-inspired multi-page redesign for classic research and technology radar"
+  }
+]

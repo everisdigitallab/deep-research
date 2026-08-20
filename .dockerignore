@@ -1,0 +1,6 @@
+app/node_modules
+app/dist
+app/.wrangler
+node_modules
+.git
+.DS_Store

@@ -1,0 +1,31 @@
+{
+  "name": "template-app",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start:azure": "node --import tsx src/azure-server.ts",
+    "azure:validate:runtime": "node --import tsx src/platform/node/validate-azure-runtime.ts",
+    "preview": "wrangler pages dev ../webapp/dist --config ../platform/cloudflare/wrangler.jsonc",
+    "cf-typegen": "wrangler types --config ../platform/cloudflare/wrangler.jsonc --env-interface CloudflareBindings",
+    "db:compile:postgres": "node ../platform/database/compile-portable-sql.mjs --source-migrations ./migrations --source-seed ./seed.sql --target postgres --output-dir ./generated/postgres",
+    "db:migrate:local": "wrangler d1 migrations apply template-app-dev --config ../platform/cloudflare/wrangler.jsonc --local",
+    "db:migrate:dev": "wrangler d1 migrations apply template-app-dev --config ../platform/cloudflare/wrangler.jsonc",
+    "db:seed": "wrangler d1 execute template-app-dev --config ../platform/cloudflare/wrangler.jsonc --local --file=./seed.sql",
+    "db:console:local": "wrangler d1 execute template-app-dev --config ../platform/cloudflare/wrangler.jsonc --local"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.0",
+    "hono": "^4.12.30",
+    "pg": "^8.23.0",
+    "sql.js": "^1.14.1",
+    "tsx": "^4.23.9"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260722.1",
+    "@hono/vite-build": "^1.11.1",
+    "@hono/vite-dev-server": "^0.26.1",
+    "vite": "^8.1.4",
+    "wrangler": "^4.110.0"
+  }
+}

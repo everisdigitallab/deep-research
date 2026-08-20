@@ -1,0 +1,10 @@
+{
+  "target": "postgres",
+  "sourceMigrations": "./migrations",
+  "sourceSeed": "./seed.sql",
+  "generatedAt": "2026-08-14T15:05:59.583Z",
+  "migrationFiles": [
+    "0001_initial_schema.sql",
+    "0002_add_soft_delete_columns.sql"
+  ]
+}

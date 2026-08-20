@@ -1,0 +1,250 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · design-system: design.md · designed-as-app */
+@import url("/site/tokens.css");
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at top left, rgba(51, 144, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 92% 8%, rgba(63, 207, 255, 0.18), transparent 22%),
+    linear-gradient(180deg, var(--color-paper), var(--color-paper-2));
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+body {
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+}
+
+.launch-shell,
+.classic-shell,
+.radar-shell {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: var(--space-md) 0 var(--space-xl);
+}
+
+.launch-topbar,
+.classic-topbar,
+.radar-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 16px 20px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+}
+
+.launch-brand,
+.classic-brand,
+.radar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.launch-brand-mark,
+.classic-brand-mark,
+.radar-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  color: var(--color-accent-ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.launch-brand-copy strong,
+.classic-brand-copy strong,
+.radar-brand strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: -0.03em;
+}
+
+.launch-brand-copy span,
+.classic-brand-copy span,
+.radar-brand small,
+.launch-nav a,
+.classic-nav a,
+.radar-nav a,
+.launch-copy p,
+.launch-eyebrow,
+.launch-kicker,
+.classic-kicker,
+.classic-hero-copy p,
+.radar-kicker,
+.radar-panel-head p,
+.radar-status,
+.radar-field-head p,
+.radar-empty p,
+.radar-muted {
+  color: var(--color-ink-2);
+}
+
+.launch-nav,
+.classic-nav,
+.radar-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.launch-nav a,
+.classic-nav a,
+.radar-nav a,
+.classic-utility-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(80, 102, 143, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  transition: transform var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), background var(--dur-short) var(--ease-out);
+}
+
+.launch-nav a:hover,
+.classic-nav a:hover,
+.radar-nav a:hover,
+.classic-utility-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(51, 144, 255, 0.28);
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.launch-hero,
+.classic-hero {
+  border: 1px solid var(--color-rule);
+  border-radius: calc(var(--radius-card) + 8px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 247, 255, 0.94)),
+    radial-gradient(circle at top right, rgba(63, 207, 255, 0.12), transparent 28%);
+  box-shadow: var(--shadow-soft);
+}
+
+.launch-button,
+.classic-hero-action,
+.radar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), background var(--dur-short) var(--ease-out);
+}
+
+.launch-button:hover,
+.classic-hero-action:hover,
+.radar-button:hover {
+  transform: translateY(-1px);
+}
+
+.launch-button-primary,
+.classic-hero-action-primary,
+.radar-button-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  color: var(--color-accent-ink);
+  box-shadow: 0 12px 28px rgba(38, 121, 255, 0.22);
+}
+
+.launch-button-secondary,
+.classic-hero-action-secondary,
+.radar-button-muted {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(80, 102, 143, 0.14);
+  color: var(--color-ink);
+}
+
+.launch-card,
+.classic-overview-card,
+.classic-surface,
+.radar-panel,
+.radar-hero {
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-card);
+}
+
+.launch-kicker,
+.classic-kicker,
+.radar-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+.launch-kicker::before,
+.classic-kicker::before,
+.radar-kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+@media (max-width: 960px) {
+  .launch-shell,
+  .classic-shell,
+  .radar-shell {
+    width: min(100% - 20px, 1480px);
+  }
+
+  .launch-topbar,
+  .classic-topbar,
+  .radar-topbar,
+  .launch-nav,
+  .classic-nav,
+  .radar-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .launch-nav a,
+  .classic-nav a,
+  .radar-nav a,
+  .classic-utility-button,
+  .launch-button,
+  .classic-hero-action,
+  .radar-button {
+    width: 100%;
+  }
+}

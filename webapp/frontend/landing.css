@@ -1,0 +1,179 @@
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 */
+/* Hallmark · genre: modern-minimal · macrostructure: Marquee Hero · design-system: design.md · designed-as-app */
+.launch-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.launch-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+  gap: var(--space-lg);
+  padding: clamp(28px, 4vw, 56px);
+  overflow: hidden;
+}
+
+.launch-copy h1 {
+  margin: 14px 0;
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  overflow-wrap: anywhere;
+}
+
+.launch-copy p {
+  max-width: 60ch;
+  font-size: 1.05rem;
+}
+
+.launch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.launch-proof {
+  display: grid;
+  gap: 14px;
+}
+
+.launch-card {
+  padding: 20px;
+}
+
+.launch-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.launch-destinations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.launch-destination {
+  padding: 28px;
+  text-decoration: none;
+}
+
+.launch-destination h2 {
+  margin: 14px 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2vw, 2.25rem);
+  letter-spacing: -0.04em;
+}
+
+.launch-destination p {
+  margin: 0 0 18px;
+  color: var(--color-ink-2);
+}
+
+.launch-points {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.launch-points li {
+  display: inline-flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.launch-points li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  flex: 0 0 auto;
+}
+
+@media (max-width: 960px) {
+  .launch-hero,
+  .launch-destinations {
+    grid-template-columns: 1fr;
+  }
+}
+
+.launch-hero {
+  position: relative;
+  min-height: 520px;
+  align-items: end;
+}
+
+.launch-hero::after {
+  content: "";
+  position: absolute;
+  right: -32px;
+  bottom: -40px;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(63, 207, 255, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+.launch-copy {
+  display: grid;
+  align-content: start;
+}
+
+.launch-copy h1 {
+  max-width: 10ch;
+}
+
+.launch-proof {
+  align-self: stretch;
+}
+
+.launch-card,
+.launch-destination {
+  transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), background var(--dur-short) var(--ease-out);
+}
+
+.launch-card:hover,
+.launch-destination:hover {
+  transform: translateY(-2px);
+  border-color: rgba(51, 144, 255, 0.18);
+  box-shadow: 0 20px 44px rgba(17, 43, 77, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.launch-destination {
+  position: relative;
+  min-height: 320px;
+  display: grid;
+  align-content: start;
+}
+
+.launch-destination::after {
+  content: "";
+  position: absolute;
+  inset: auto 28px 24px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(51, 144, 255, 0.24), rgba(51, 144, 255, 0));
+}
+
+.launch-actions .launch-button {
+  min-width: 220px;
+}
+
+@media (max-width: 960px) {
+  .launch-hero {
+    min-height: auto;
+  }
+
+  .launch-copy h1 {
+    max-width: 12ch;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "density-os",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix app run dev",
+    "build": "npm --prefix app run build",
+    "preview": "npm --prefix app run preview",
+    "cf-typegen": "npm --prefix app run cf-typegen",
+    "db:migrate:local": "npm --prefix app run db:migrate:local",
+    "db:migrate:prod": "npm --prefix app run db:migrate:prod",
+    "db:seed": "npm --prefix app run db:seed",
+    "db:console:local": "npm --prefix app run db:console:local"
+  },
+  "devDependencies": {
+    "@rolldown/binding-darwin-arm64": "^1.2.3"
+  }
+}

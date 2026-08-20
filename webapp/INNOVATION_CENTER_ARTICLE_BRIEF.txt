@@ -1,0 +1,384 @@
+INNOVATION CENTER ARTICLE BRIEF
+
+Purpose of this file
+- This document is a handoff brief for another agent that will help write an article about this project.
+- It explains what the project is, what was customized for the Innovation Center, which features matter most, and why this solution is useful for an innovation function.
+- Prefer using this file as the base narrative and validate any implementation detail against the code when needed.
+
+Project identity
+- Base project: GPT Researcher
+- Current customized project: GPT Researcher adapted for Innovation Center strategic intelligence workflows
+- Main stack:
+  - Python + FastAPI backend
+  - HTML/CSS/JavaScript frontend pages
+  - GPT Researcher as research engine
+  - Azure OpenAI support
+  - Web research plus local document ingestion
+
+High-level summary
+- This project started from GPT Researcher, an open deep research agent designed for web and local-document research.
+- On top of that base, the project was adapted to serve an Innovation Center use case.
+- Instead of only generating generic research reports, it now supports two specialized interfaces:
+  - IC Trend Scout
+  - IC Technology Radar
+- These interfaces turn scattered signals from the web and local PDFs into structured recommendations that are easier for an innovation team to review, compare, store, and act on.
+
+Core idea for the article
+- The article should present this project not just as an AI research tool, but as an operating layer for innovation intelligence.
+- The strongest framing is:
+  - The solution helps an Innovation Center move from ad hoc scanning to structured, repeatable, source-linked decision support.
+- It is useful because it does not stop at "research summary."
+- It transforms signals into:
+  - trends
+  - project opportunities
+  - radar recommendations
+  - repeatable monitoring cycles
+  - historical memory across runs
+
+What problem this solves for an Innovation Center
+- Innovation teams often face these issues:
+  - too many weak signals spread across the web
+  - difficulty connecting news, research, startups, tools, and internal interests
+  - lack of repeatable criteria for deciding what to monitor, test, or adopt
+  - poor traceability between a strategic recommendation and the source evidence behind it
+  - difficulty preserving historical context across recurring scans
+- This project addresses those issues by:
+  - collecting web and local-document evidence
+  - structuring findings into reusable research flows
+  - classifying outputs by strategic relevance and maturity
+  - linking recommendations back to sources
+  - persisting runs for later review and comparison
+
+Why this helps a sector focused on innovation
+- An Innovation Center needs more than information retrieval.
+- It needs a way to identify where to invest attention, experimentation, PoCs, assets, and future offerings.
+- This project supports that by turning research into portfolio-oriented outputs.
+- It is especially useful for:
+  - PoC funnel prioritization
+  - emerging technology monitoring
+  - offer discovery
+  - scalable asset ideation
+  - market and client signal interpretation
+  - strategic technology radar creation
+- In practice, the system helps an innovation function answer:
+  - What should we monitor?
+  - What should we test next?
+  - What is mature enough for adoption?
+  - What still needs assessment?
+  - Which sources actually support these conclusions?
+
+Specialized interfaces added in this project
+
+1. IC Trend Scout
+- Route: /ic-trend-scout
+- Goal:
+  - Research a topic and convert it into a structured innovation intelligence output.
+- What it does:
+  - accepts a research topic
+  - accepts Innovation Center context
+  - accepts keywords
+  - accepts curated web sources
+  - accepts local PDFs and documents
+  - generates an executive summary
+  - identifies key signals
+  - identifies use cases and suggested PoCs
+  - highlights risks and barriers
+  - generates project trends connected to evidence
+  - scores those trends
+  - classifies them into radar rings
+- Why it matters:
+  - It helps innovation teams quickly convert a topic such as AI Agents, Open Gateway, Digital Twins, Synthetic Data, Quantum, or Space Tech into action-oriented insights.
+
+2. IC Technology Radar
+- Route: /ic-technology-radar
+- Goal:
+  - Generate a Thoughtworks-inspired radar adapted to Innovation Center needs.
+- What it does:
+  - uses the same research setup foundation
+  - creates radar entries from evidence and context
+  - organizes entries into quadrants
+  - organizes entries into rings
+  - turns trends into project opportunities
+  - saves radar boards and historical runs
+  - accumulates trends over time
+  - lets users remove trends from the board
+  - provides a visual radar map with numbered trends and matching textual references
+- Why it matters:
+  - It transforms research into a portfolio view that helps innovation leadership decide what to adopt, trial, assess, or treat with caution.
+
+Main functional capabilities
+
+Research inputs
+- Research Topic
+- Innovation Center Context
+- Keywords
+- Web Pages and Sources
+- Local PDFs and local documents
+- Time window selection
+- Max search result control
+
+Research setup management
+- Users can save reusable research setups in the Technology Radar flow.
+- A setup stores:
+  - Research Topic
+  - Innovation Center Context
+  - Keywords
+- Saved setups can be selected and reused in future runs.
+
+Source handling
+- The project supports two source modes:
+  - curated user-provided web sources
+  - discovered sources found during research
+- It also supports local documents from the project document folder.
+- The interface includes local persistence for saved web sources so users can reuse the same trusted source library across runs.
+
+Structured outputs from IC Trend Scout
+- executive summary
+- why it matters
+- key signals
+- relevant tools, companies, repositories
+- possible use cases
+- suggested PoCs
+- risks and barriers
+- recommended radar ring
+- recommended next action
+- source map
+- project trends linked to sources
+
+Structured outputs from IC Technology Radar
+- executive summary
+- radar story
+- key signals
+- priority moves
+- source map
+- radar entries
+- quadrant classification
+- ring classification
+- project opportunities
+- recommended action
+- linked sources
+- accumulated radar board history
+
+Scoring model used in the specialized flows
+- Both specialized flows use four practical scoring dimensions:
+  - Strategic Impact
+  - Market & Client Potential
+  - Execution Readiness
+  - Scalable Asset Potential
+- These dimensions make the output more useful for innovation governance because they balance:
+  - strategic value
+  - commercial opportunity
+  - feasibility
+  - reuse potential
+
+Radar ring logic
+- Rings used in this project:
+  - Adopt
+  - Trial
+  - Assess
+  - Caution
+- Recommended interpretation in the article:
+  - Adopt: mature and strategically relevant enough to use with confidence
+  - Trial: promising and ready for experiments or PoCs
+  - Assess: relevant but still requires study or validation
+  - Caution: high uncertainty, weak fit, or meaningful risk
+
+Radar quadrant logic
+- Quadrants used in this project:
+  - Techniques
+  - Tools
+  - Platforms
+  - Languages & Frameworks
+- The article can explain that the quadrants help cluster different kinds of trends so decision-makers do not look at all signals in the same way.
+
+Persistence and historical memory
+- One of the most important innovation-specific adaptations is persistence.
+- The project does not only generate one-off outputs.
+- It stores:
+  - trend research runs
+  - recurring monitor definitions
+  - radar setups
+  - radar boards
+  - historical radar runs
+- This matters for innovation because a trend only makes sense over time.
+- Historical memory enables:
+  - trend evolution tracking
+  - comparison between rounds
+  - traceability of recommendations
+  - a growing institutional memory
+
+Recurring monitoring
+- The IC Trend Scout includes recurring monitors.
+- A monitor can rerun a saved configuration on an interval basis.
+- The current implementation supports scheduled reruns in day intervals, with a default use case around every 3 days.
+- Why this matters:
+  - innovation scanning should not depend on manual repetition
+  - recurring runs help maintain a continuous watch on emerging themes
+  - every run is stored, creating a time-based research record
+
+Why the combination of web and local PDFs is strategically important
+- Innovation decisions often require combining:
+  - external market signals
+  - research papers
+  - internal material
+  - curated strategic sources
+- This project supports that hybrid model.
+- It means the Innovation Center can mix public signals with internal reports or local knowledge documents.
+- That increases relevance and reduces the gap between broad market hype and the organization's own priorities.
+
+How the project uses AI in a practical way
+- The system uses LLM-based research orchestration, not only direct prompting.
+- The base GPT Researcher architecture works with planner and execution logic:
+  - planning research questions
+  - gathering sources
+  - summarizing findings
+  - writing structured outputs
+- In this customized version, the AI is guided with domain-specific prompts for Innovation Center outcomes.
+- This is important for the article:
+  - The differentiation is not only "AI searches the web."
+  - The differentiation is that AI is shaped into a repeatable innovation research workflow.
+
+Role of embeddings in the project
+- Embeddings are relevant because GPT Researcher uses retrieval and context compression.
+- In simple terms:
+  - embeddings help compare semantic similarity across chunks of text
+  - they help select the most relevant context from collected documents and sources
+  - they improve grounding for the final outputs
+- Why this matters to the Innovation Center:
+  - better retrieval means better signal quality
+  - it reduces noise in large source sets
+  - it helps the system work with both web content and local documents
+
+Azure OpenAI adaptation
+- The project was adapted to support Azure OpenAI environment formats.
+- Compatibility was added for environment variables such as:
+  - ENDPOINT_URL
+  - DEPLOYMENT_NAME
+  - AZURE_OPENAI_API_KEY
+  - AZURE_API_VERSION
+- This is relevant for the article because it shows the solution is closer to enterprise deployment realities.
+
+Key design value for innovation teams
+- The project is stronger than a chatbot for five reasons:
+  - it works from structured research inputs
+  - it generates source-linked outputs
+  - it classifies findings for innovation decision-making
+  - it stores runs and history
+  - it supports recurring monitoring
+
+Suggested article positioning statements
+- This project transforms GPT Researcher into an Innovation Center intelligence workspace.
+- It helps innovation teams convert weak signals into structured decisions.
+- It bridges web intelligence, local knowledge, and strategic prioritization.
+- It makes technology scanning more repeatable, evidence-based, and portfolio-oriented.
+- It adapts the Technology Radar concept to a practical AI-assisted research flow.
+
+Suggested narrative structure for the final article
+
+1. Context
+- Innovation teams operate in environments with too many signals and not enough structured interpretation.
+- Trends move quickly and require both strategic sensemaking and operational follow-up.
+
+2. The challenge
+- Traditional scouting is fragmented, manual, and hard to scale.
+- Generic chat interfaces are helpful but often do not preserve traceability, classification, or historical continuity.
+
+3. The solution
+- Present the project as a customized intelligence platform built from GPT Researcher.
+- Explain the two interfaces:
+  - IC Trend Scout for structured trend research
+  - IC Technology Radar for portfolio-level classification and tracking
+
+4. How it works
+- Research topic + context + keywords + sources + local documents
+- AI-assisted research pass
+- structured output with scores, rings, quadrants, and source links
+- history and recurring monitoring
+
+5. Why this is valuable for the Innovation Center
+- stronger prioritization
+- better PoC pipeline formation
+- better source traceability
+- reusable institutional memory
+- easier communication with leadership and delivery teams
+
+6. Strategic impact
+- The system can become a reusable capability, not just a one-time experiment.
+- It can support scouting, offer strategy, technical experimentation, and asset roadmapping.
+
+Concrete examples of article angles
+- "From weak signals to actionable radar: how AI can support innovation intelligence"
+- "Turning GPT Researcher into an Innovation Center operating layer"
+- "A practical AI-assisted technology radar for continuous innovation monitoring"
+- "How to combine web research, local knowledge, and radar logic in an Innovation Center"
+
+Practical examples that can be cited
+- A topic like AI Agents can generate:
+  - a structured summary
+  - suggested PoCs
+  - project trends
+  - a radar placement
+  - linked evidence
+- A topic like Digital Twins can produce:
+  - a radar board with multiple entries across quadrants and rings
+  - project opportunities tied to supporting sources
+  - a historical board that evolves across runs
+
+Important implementation details the article can mention carefully
+- The project preserves the original GPT Researcher flow and keeps the classic research UI at route /.
+- The Innovation Center additions are separate interfaces rather than a destructive replacement.
+- The specialized pages are implemented in:
+  - frontend/ic-trend-scout.html
+  - frontend/ic-technology-radar.html
+- Main backend integration lives in:
+  - backend/server/app.py
+  - backend/server/ic_trend_scout.py
+  - backend/server/ic_technology_radar.py
+
+Good claims to make
+- The solution is designed for evidence-linked innovation research.
+- The solution supports both exploratory scanning and repeatable monitoring.
+- The solution brings structure to innovation decision-making through scores, rings, quadrants, and source maps.
+- The solution combines external discovery with internal or local-document context.
+
+Claims to avoid or qualify
+- Avoid saying the system is fully autonomous in strategic decision-making.
+- Avoid claiming it replaces analysts or innovation leads.
+- Avoid implying guaranteed factual correctness for all sources.
+- Avoid presenting radar placement as absolute truth.
+- Better framing:
+  - the tool accelerates research and prioritization
+  - the outputs support human review and strategic judgment
+
+Suggested tone for the article
+- Strategic
+- Practical
+- Innovation-oriented
+- Evidence-driven
+- Avoid overly academic language unless the final audience is specifically technical
+
+Potential audiences for the article
+- Innovation Center leadership
+- strategy and transformation leaders
+- enterprise architecture stakeholders
+- R&D and emerging technology teams
+- delivery and consulting leaders interested in PoCs and scalable assets
+
+Useful keywords for the article
+- innovation intelligence
+- technology radar
+- trend scouting
+- AI-assisted research
+- strategic monitoring
+- source-linked research
+- emerging technology evaluation
+- PoC prioritization
+- scalable asset discovery
+- innovation portfolio management
+
+Suggested closing message
+- The strongest closing message is that this project turns innovation research into a more systematic capability.
+- Instead of reacting to trends informally, the Innovation Center gains a way to continuously collect, classify, store, and revisit strategic signals with evidence attached.
+
+If another agent needs a concise one-paragraph summary
+- This project customizes GPT Researcher into an Innovation Center intelligence platform with two specialized experiences: IC Trend Scout, for source-linked strategic trend analysis and project opportunity discovery, and IC Technology Radar, for classifying technologies and emerging topics into quadrants and rings inspired by the Thoughtworks radar model. By combining web research, local documents, reusable research setups, recurring monitoring, and historical persistence of runs and radar boards, the solution helps an Innovation Center move from ad hoc scanning to a repeatable, evidence-based workflow for prioritizing PoCs, scalable assets, new offerings, and strategic innovation initiatives.

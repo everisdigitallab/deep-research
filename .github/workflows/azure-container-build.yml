@@ -1,0 +1,354 @@
+name: azure-container-apps-deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "app/**"
+      - "webapp/**"
+      - "ci/**"
+      - "platform/azure/**"
+      - "platform/azure/container/**"
+      - "platform/cloudflare/**"
+      - ".github/workflows/azure-container-build.yml"
+      - ".github/**"
+  pull_request:
+    paths:
+      - "app/**"
+      - "webapp/**"
+      - "ci/**"
+      - "platform/azure/**"
+      - "platform/azure/container/**"
+      - "platform/cloudflare/**"
+      - ".github/workflows/azure-container-build.yml"
+      - ".github/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      APP_MODE: ${{ vars.APP_MODE || 'app-runtime' }}
+      IMAGE_NAME: ${{ vars.IMAGE_NAME || 'app' }}
+      IMAGE_TAG: ${{ github.sha }}
+      AZURE_CONTAINER_CPU: ${{ vars.AZURE_CONTAINER_CPU || '1' }}
+      AZURE_CONTAINER_MEMORY: ${{ vars.AZURE_CONTAINER_MEMORY || '2' }}
+      AZURE_CONTAINER_MIN_REPLICAS: ${{ vars.AZURE_CONTAINER_MIN_REPLICAS || '0' }}
+      AZURE_CONTAINER_MAX_REPLICAS: ${{ vars.AZURE_CONTAINER_MAX_REPLICAS || '3' }}
+      AZURE_DATA_MOUNT_PATH: ${{ vars.AZURE_DATA_MOUNT_PATH || '' }}
+      SQLITE_PATH: ${{ vars.SQLITE_PATH || '' }}
+      DOCUMENTS_PATH: ${{ vars.DOCUMENTS_PATH || '' }}
+      AUTO_RUN_MIGRATIONS: ${{ vars.AUTO_RUN_MIGRATIONS || 'true' }}
+      AUTO_SEED_ON_EMPTY_DB: ${{ vars.AUTO_SEED_ON_EMPTY_DB || 'false' }}
+      APP_NAME: ${{ vars.APP_NAME || 'app' }}
+      APP_ENV: ${{ vars.APP_ENV || 'production' }}
+      APP_RUNTIME: ${{ vars.APP_RUNTIME || 'azure-container-apps' }}
+      API_BASE_PATH: ${{ vars.API_BASE_PATH || '/api' }}
+      AI_ENABLED: ${{ vars.AI_ENABLED || 'false' }}
+      DATABASE_PROVIDER: ${{ vars.DATABASE_PROVIDER || '' }}
+      STATIC_SITE_ROOT: ${{ vars.STATIC_SITE_ROOT || 'webapp' }}
+      STATIC_API_TEMPLATE: ${{ vars.STATIC_API_TEMPLATE || '' }}
+      AZURE_CONTAINER_PORT: ${{ vars.AZURE_CONTAINER_PORT || '3000' }}
+      AZURE_HEALTHCHECK_PATH: ${{ vars.AZURE_HEALTHCHECK_PATH || '/api/health' }}
+      POSTGRES_HOST: ${{ vars.POSTGRES_HOST || '' }}
+      POSTGRES_PORT: ${{ vars.POSTGRES_PORT || '5432' }}
+      POSTGRES_DATABASE: ${{ vars.POSTGRES_DATABASE || '' }}
+      POSTGRES_USER: ${{ vars.POSTGRES_USER || '' }}
+      POSTGRES_SSLMODE: ${{ vars.POSTGRES_SSLMODE || 'require' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        if: ${{ env.APP_MODE != 'static-web' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        if: ${{ env.APP_MODE != 'static-web' }}
+        working-directory: app
+        run: npm ci
+
+      - name: Build app
+        if: ${{ env.APP_MODE != 'static-web' }}
+        working-directory: app
+        run: npm run build
+
+      - name: Compile PostgreSQL portability artifacts
+        if: ${{ env.APP_MODE != 'static-web' }}
+        working-directory: app
+        run: npm run db:compile:postgres
+
+      - name: Resolve deploy mode settings
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case "${APP_MODE}" in
+            app-runtime|static-web-with-api)
+              echo "DOCKERFILE_PATH=platform/azure/container/Dockerfile" >> "${GITHUB_ENV}"
+              ;;
+            static-web)
+              echo "DOCKERFILE_PATH=platform/azure/container/Dockerfile.static" >> "${GITHUB_ENV}"
+              ;;
+            *)
+              echo "Unsupported APP_MODE: ${APP_MODE}" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install Container Apps extension
+        run: az extension add --name containerapp --upgrade --only-show-errors
+
+      - name: Validate PostgreSQL runtime bootstrap
+        if: ${{ env.APP_MODE != 'static-web' }}
+        working-directory: app
+        env:
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AZURE_DATA_MOUNT_PATH: ${{ runner.temp }}/app-data
+          SQLITE_PATH: ${{ runner.temp }}/app-data/database/app.sqlite
+          DOCUMENTS_PATH: ${{ runner.temp }}/app-data/documents
+        run: npm run azure:validate:runtime
+
+      - name: Log in to Azure Container Registry
+        run: az acr login --name "${{ vars.AZURE_CONTAINER_REGISTRY }}"
+
+      - name: Build and push Azure container image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE_PATH }}
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Render Container Apps manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${APP_MODE}" != "static-web" ]]; then
+            cat > containerapp.yaml <<EOF
+          location: "${{ vars.AZURE_LOCATION }}"
+          name: "${{ vars.AZURE_CONTAINER_APP_NAME }}"
+          properties:
+            managedEnvironmentId: "/subscriptions/${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}/resourceGroups/${{ vars.AZURE_RESOURCE_GROUP }}/providers/Microsoft.App/managedEnvironments/${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT }}"
+            configuration:
+              ingress:
+                external: true
+                targetPort: ${{ env.AZURE_CONTAINER_PORT }}
+                transport: auto
+                allowInsecure: false
+              registries:
+                - server: "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}"
+                  identity: system
+              secrets:
+                - name: app-base-url
+                  value: "${{ secrets.APP_BASE_URL }}"
+                - name: admin-bootstrap-token
+                  value: "${{ secrets.ADMIN_BOOTSTRAP_TOKEN }}"
+                - name: database-url
+                  value: "${{ secrets.DATABASE_URL }}"
+                - name: postgres-admin-password
+                  value: "${{ secrets.POSTGRES_ADMIN_PASSWORD }}"
+            template:
+              containers:
+                - name: app
+                  image: "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+                  env:
+                    - name: NODE_ENV
+                      value: "production"
+                    - name: PORT
+                      value: "3000"
+                    - name: APP_NAME
+                      value: "${{ env.APP_NAME }}"
+                    - name: APP_ENV
+                      value: "${{ env.APP_ENV }}"
+                    - name: APP_RUNTIME
+                      value: "${{ env.APP_RUNTIME }}"
+                    - name: APP_MODE
+                      value: "${{ env.APP_MODE }}"
+                    - name: API_BASE_PATH
+                      value: "${{ env.API_BASE_PATH }}"
+                    - name: AI_ENABLED
+                      value: "${{ env.AI_ENABLED }}"
+                    - name: APP_BASE_URL
+                      secretRef: app-base-url
+                    - name: STATIC_API_TEMPLATE
+                      value: "${{ env.STATIC_API_TEMPLATE }}"
+                    - name: DATABASE_PROVIDER
+                      value: "${{ env.DATABASE_PROVIDER }}"
+                    - name: AZURE_DATA_MOUNT_PATH
+                      value: "${{ env.AZURE_DATA_MOUNT_PATH }}"
+                    - name: SQLITE_PATH
+                      value: "${{ env.SQLITE_PATH }}"
+                    - name: DOCUMENTS_PATH
+                      value: "${{ env.DOCUMENTS_PATH }}"
+                    - name: AUTO_RUN_MIGRATIONS
+                      value: "${{ env.AUTO_RUN_MIGRATIONS }}"
+                    - name: AUTO_SEED_ON_EMPTY_DB
+                      value: "${{ env.AUTO_SEED_ON_EMPTY_DB }}"
+                    - name: ADMIN_BOOTSTRAP_TOKEN
+                      secretRef: admin-bootstrap-token
+                    - name: DATABASE_URL
+                      secretRef: database-url
+                    - name: POSTGRES_ADMIN_PASSWORD
+                      secretRef: postgres-admin-password
+                    - name: POSTGRES_HOST
+                      value: "${{ env.POSTGRES_HOST }}"
+                    - name: POSTGRES_PORT
+                      value: "${{ env.POSTGRES_PORT }}"
+                    - name: POSTGRES_DATABASE
+                      value: "${{ env.POSTGRES_DATABASE }}"
+                    - name: POSTGRES_USER
+                      value: "${{ env.POSTGRES_USER }}"
+                    - name: POSTGRES_SSLMODE
+                      value: "${{ env.POSTGRES_SSLMODE }}"
+                  resources:
+                    cpu: ${{ env.AZURE_CONTAINER_CPU }}
+                    memory: "${{ env.AZURE_CONTAINER_MEMORY }}Gi"
+                  volumeMounts:
+                    - volumeName: app-data
+                      mountPath: "${{ env.AZURE_DATA_MOUNT_PATH }}"
+                  probes:
+                    - type: Startup
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      failureThreshold: 18
+                      periodSeconds: 10
+                    - type: Liveness
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      initialDelaySeconds: 30
+                      periodSeconds: 15
+                    - type: Readiness
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+              scale:
+                minReplicas: ${{ env.AZURE_CONTAINER_MIN_REPLICAS }}
+                maxReplicas: ${{ env.AZURE_CONTAINER_MAX_REPLICAS }}
+              volumes:
+                - name: app-data
+                  storageType: AzureFile
+                  storageName: "${{ vars.AZURE_CONTAINER_APP_STORAGE_NAME }}"
+          EOF
+          else
+            cat > containerapp.yaml <<EOF
+          location: "${{ vars.AZURE_LOCATION }}"
+          name: "${{ vars.AZURE_CONTAINER_APP_NAME }}"
+          properties:
+            managedEnvironmentId: "/subscriptions/${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}/resourceGroups/${{ vars.AZURE_RESOURCE_GROUP }}/providers/Microsoft.App/managedEnvironments/${{ vars.AZURE_CONTAINER_APPS_ENVIRONMENT }}"
+            configuration:
+              ingress:
+                external: true
+                targetPort: ${{ env.AZURE_CONTAINER_PORT }}
+                transport: auto
+                allowInsecure: false
+              registries:
+                - server: "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}"
+                  identity: system
+              secrets:
+                - name: app-base-url
+                  value: "${{ secrets.APP_BASE_URL }}"
+            template:
+              containers:
+                - name: app
+                  image: "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+                  env:
+                    - name: NODE_ENV
+                      value: "production"
+                    - name: PORT
+                      value: "3000"
+                    - name: APP_NAME
+                      value: "${{ env.APP_NAME }}"
+                    - name: APP_ENV
+                      value: "${{ env.APP_ENV }}"
+                    - name: APP_RUNTIME
+                      value: "${{ env.APP_RUNTIME }}"
+                    - name: APP_MODE
+                      value: "${{ env.APP_MODE }}"
+                    - name: API_BASE_PATH
+                      value: "${{ env.API_BASE_PATH }}"
+                    - name: AI_ENABLED
+                      value: "${{ env.AI_ENABLED }}"
+                    - name: APP_BASE_URL
+                      secretRef: app-base-url
+                    - name: STATIC_API_TEMPLATE
+                      value: "${{ env.STATIC_API_TEMPLATE }}"
+                  resources:
+                    cpu: ${{ env.AZURE_CONTAINER_CPU }}
+                    memory: "${{ env.AZURE_CONTAINER_MEMORY }}Gi"
+                  probes:
+                    - type: Startup
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      failureThreshold: 18
+                      periodSeconds: 10
+                    - type: Liveness
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      initialDelaySeconds: 30
+                      periodSeconds: 15
+                    - type: Readiness
+                      httpGet:
+                        path: "${{ env.AZURE_HEALTHCHECK_PATH }}"
+                        port: ${{ env.AZURE_CONTAINER_PORT }}
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+              scale:
+                minReplicas: ${{ env.AZURE_CONTAINER_MIN_REPLICAS }}
+                maxReplicas: ${{ env.AZURE_CONTAINER_MAX_REPLICAS }}
+          EOF
+          fi
+
+      - name: Create or update Azure Container App
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if az containerapp show \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ vars.AZURE_CONTAINER_APP_NAME }}" >/dev/null 2>&1; then
+            az containerapp update \
+              --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+              --name "${{ vars.AZURE_CONTAINER_APP_NAME }}" \
+              --yaml containerapp.yaml \
+              --output none
+          else
+            az containerapp create \
+              --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+              --name "${{ vars.AZURE_CONTAINER_APP_NAME }}" \
+              --yaml containerapp.yaml \
+              --output none
+          fi
+
+      - name: Show deployed container app state
+        run: |
+          az containerapp show \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ vars.AZURE_CONTAINER_APP_NAME }}" \
+            --query "{provisioningState:properties.provisioningState,fqdn:properties.configuration.ingress.fqdn,image:properties.template.containers[0].image,latestRevision:properties.latestRevisionName,latestReadyRevision:properties.latestReadyRevisionName,customDomains:properties.configuration.ingress.customDomains}" \
+            --output table

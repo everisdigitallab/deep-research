@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>IC Technology Radar</title>
+    <meta name="description" content="Innovation Center Technology Radar">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="./static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/site/innovation-theme.css?v=20260811e">
+    <link rel="stylesheet" href="/site/ic-technology-radar.css?v=20260811e">
+</head>
+<body>
+    <div class="radar-shell">
+        <header class="radar-topbar">
+            <a class="radar-brand" href="/">
+                <span class="radar-brand-mark">TR</span>
+                <span>
+                    <strong>IC Technology Radar</strong>
+                    <small>Quadrants, rings, and source-linked trend memory</small>
+                </span>
+            </a>
+            <nav class="radar-nav">
+                <a href="/"><i class="fas fa-house"></i> Workspace Home</a>
+                <a href="/classic-research"><i class="fas fa-flask"></i> Classic Research UI</a>
+            </nav>
+        </header>
+
+        <main class="radar-workspace">
+            <section class="radar-hero">
+                <div class="radar-hero-grid">
+                    <div class="radar-hero-copy">
+                        <span class="radar-kicker">Innovation Center Radar</span>
+                        <h1>Track what should be adopted, trialed, assessed, or handled with caution</h1>
+                        <p>
+                            Use the same research setup foundation, but generate a radar-style map of trends,
+                            technologies, capabilities, disciplines, and topics linked directly to the evidence.
+                        </p>
+                        <div class="radar-hero-pills">
+                            <span>Evidence-linked</span>
+                            <span>Board history</span>
+                            <span>Quadrants and rings</span>
+                        </div>
+                        <div class="radar-hero-actions">
+                            <a href="#radarSetupPanel" class="radar-button radar-button-primary">
+                                <i class="fas fa-sliders"></i>
+                                <span>Configure research setup</span>
+                            </a>
+                            <a href="#technologyRadarResults" class="radar-button radar-button-muted">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Jump to radar board</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <figure class="radar-hero-visual">
+                        <img src="/site/assets/ic-radar-hero.png?v=20260811e" width="1672" height="941" alt="Abstract Innovation Center radar with four colored technology signals" fetchpriority="high">
+                    </figure>
+                </div>
+
+                <div class="radar-hero-metrics">
+                    <article>
+                        <strong>Research setup</strong>
+                        <span>Topic, context, sources, keywords, local docs</span>
+                    </article>
+                    <article>
+                        <strong>Radar output</strong>
+                        <span>Signals, trends, projects, linked evidence</span>
+                    </article>
+                    <article>
+                        <strong>Decision lens</strong>
+                        <span>Quadrants, rings, scores, and portfolio action</span>
+                    </article>
+                </div>
+            </section>
+
+            <section class="radar-stage">
+                <section class="radar-left">
+                    <section class="radar-panel radar-setup-panel" id="radarSetupPanel">
+                        <div class="radar-panel-head">
+                            <div>
+                                <span class="radar-kicker">Research setup</span>
+                                <h2>Configure an Innovation Center radar run</h2>
+                            </div>
+                            <p>Map sources, interpret signals, and organize recommendations into radar rings and quadrants.</p>
+                        </div>
+
+                        <div class="radar-setup-banner">
+                            <article>
+                                <strong>Focused collection</strong>
+                                <span>Blend guided web sources, saved setups, and local documents into one evidence pass.</span>
+                            </article>
+                            <article>
+                                <strong>Reusable criteria</strong>
+                                <span>Keep research topics, context, and keywords ready for recurring radar cycles.</span>
+                            </article>
+                        </div>
+
+                        <form id="icTechnologyRadarForm" class="radar-form">
+                            <div class="radar-field radar-span-full">
+                                <label for="radarTopic">Research Topic</label>
+                                <input id="radarTopic" type="text" placeholder="AI Agents, Open Gateway, Digital Twins, Synthetic Data..." required>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <div class="radar-field-head">
+                                    <div>
+                                        <label>Saved Research Setups</label>
+                                        <p>Save and reload combinations of Innovation Center Context, Research Topic, and Keywords.</p>
+                                    </div>
+                                    <div class="radar-inline-actions">
+                                        <input id="radarSetupName" type="text" placeholder="AI Agents setup">
+                                        <button type="button" id="saveResearchSetupBtn" class="radar-button radar-button-muted">
+                                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                                            <span>Save setup</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="savedResearchSetups" class="radar-saved-library"></div>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <label for="radarContext">Innovation Center Context</label>
+                                <textarea id="radarContext" rows="5">The Innovation Center explores emerging technologies, market signals, research, startups, tools, open-source repositories, and new disciplines to identify opportunities for PoCs, scalable assets, new offerings, client solutions, and strategic innovation initiatives.</textarea>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <div class="radar-field-head">
+                                    <div>
+                                        <label>Web Pages and Sources</label>
+                                        <p>Add the sources that must influence the radar recommendation.</p>
+                                    </div>
+                                    <div class="radar-inline-actions">
+                                        <button type="button" id="radarSaveSourcesBtn" class="radar-button radar-button-muted">
+                                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                                            <span>Save sources</span>
+                                        </button>
+                                        <button type="button" id="radarClearSavedSourcesBtn" class="radar-button radar-button-muted">
+                                            <i class="fas fa-eraser" aria-hidden="true"></i>
+                                            <span>Clear saved</span>
+                                        </button>
+                                        <button type="button" id="radarAddSourceBtn" class="radar-button radar-button-muted">
+                                            <i class="fas fa-plus" aria-hidden="true"></i>
+                                            <span>Add source</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="radarSourcesList" class="radar-source-list"></div>
+                                <div id="radarSavedSourcesLibrary" class="radar-saved-library"></div>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <div class="radar-field-head">
+                                    <div>
+                                        <label>Local PDFs and Documents</label>
+                                        <p>Bring in supporting files from the Innovation Center knowledge base.</p>
+                                    </div>
+                                    <div class="radar-inline-actions">
+                                        <label class="radar-button radar-button-muted radar-upload" for="radarLocalFileInput">
+                                            <i class="fas fa-arrow-up-from-bracket" aria-hidden="true"></i>
+                                            <span>Upload files</span>
+                                        </label>
+                                        <button type="button" id="radarRefreshFilesBtn" class="radar-button radar-button-muted">
+                                            <i class="fas fa-rotate" aria-hidden="true"></i>
+                                            <span>Refresh list</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input id="radarLocalFileInput" type="file" multiple class="radar-hidden" accept=".pdf,.txt,.md,.doc,.docx,.pptx,.csv,.xls,.xlsx,.html,.htm">
+                                <div id="radarLocalFilesList" class="radar-doc-list"></div>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <label for="radarKeywords">Keywords</label>
+                                <textarea id="radarKeywords" rows="3" placeholder="agentic AI, digital twins, synthetic data, enterprise orchestration"></textarea>
+                            </div>
+
+                            <div class="radar-field">
+                                <label for="radarTimeWindow">Research Time Window</label>
+                                <select id="radarTimeWindow">
+                                    <option>Last 7 days</option>
+                                    <option selected>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                    <option>Last 12 months</option>
+                                    <option>Custom date range</option>
+                                </select>
+                            </div>
+
+                            <div class="radar-field">
+                                <label for="radarMaxSearchResults">Max search results per query</label>
+                                <input id="radarMaxSearchResults" type="number" min="1" max="20" value="6">
+                            </div>
+
+                            <div id="radarCustomDateRange" class="radar-field radar-span-full radar-hidden">
+                                <div class="radar-date-grid">
+                                    <div>
+                                        <label for="radarCustomDateStart">Start date</label>
+                                        <input id="radarCustomDateStart" type="date">
+                                    </div>
+                                    <div>
+                                        <label for="radarCustomDateEnd">End date</label>
+                                        <input id="radarCustomDateEnd" type="date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="radar-field radar-span-full">
+                                <label>Output Type</label>
+                                <div class="radar-chip-grid">
+                                    <label class="radar-chip">
+                                        <input type="checkbox" name="radar_output_type" value="Technology radar" checked>
+                                        <span class="radar-chip-copy"><strong>Technology radar</strong><small>Classify signals by quadrant and ring.</small></span>
+                                    </label>
+                                    <label class="radar-chip">
+                                        <input type="checkbox" name="radar_output_type" value="Trend mapping" checked>
+                                        <span class="radar-chip-copy"><strong>Trend mapping</strong><small>Connect themes, evidence, and change.</small></span>
+                                    </label>
+                                    <label class="radar-chip">
+                                        <input type="checkbox" name="radar_output_type" value="Project opportunities" checked>
+                                        <span class="radar-chip-copy"><strong>Project opportunities</strong><small>Surface experiments and scalable assets.</small></span>
+                                    </label>
+                                    <label class="radar-chip">
+                                        <input type="checkbox" name="radar_output_type" value="Source-linked evidence" checked>
+                                        <span class="radar-chip-copy"><strong>Linked evidence</strong><small>Keep every recommendation traceable.</small></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="radar-actions radar-span-full">
+                                <button type="submit" id="runTechnologyRadarBtn" class="radar-button radar-button-primary">
+                                    <i class="fas fa-compass-drafting"></i>
+                                    <span>Generate radar</span>
+                                </button>
+                                <span id="technologyRadarStatus" class="radar-status">Ready for a radar run</span>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="radar-panel radar-history-panel">
+                        <div class="radar-panel-head">
+                            <div>
+                                <span class="radar-kicker">Radar history</span>
+                                <h2>Saved boards by setup and date</h2>
+                            </div>
+                            <p>Each generation is stored and grouped into a living radar board that accumulates trends over time.</p>
+                        </div>
+                        <div id="savedRadarBoards" class="radar-board-history"></div>
+                    </section>
+                </section>
+
+                <aside class="radar-right">
+                    <section class="radar-panel radar-result-panel" aria-labelledby="radarBoardTitle">
+                        <div class="radar-panel-head">
+                            <div>
+                                <span class="radar-kicker">Radar board</span>
+                                <h2 id="radarBoardTitle">Innovation Center signal map</h2>
+                            </div>
+                            <p>Evidence-linked signals, positioned by ring and quadrant for a portfolio decision.</p>
+                        </div>
+
+                        <div id="technologyRadarSummary" class="radar-summary-grid">
+                            <article class="radar-summary-card">
+                                <span>Status</span>
+                                <strong>Idle</strong>
+                                <small>Waiting for a run</small>
+                            </article>
+                            <article class="radar-summary-card">
+                                <span>Total entries</span>
+                                <strong>0</strong>
+                                <small>No radar entries yet</small>
+                            </article>
+                            <article class="radar-summary-card">
+                                <span>Overall ring</span>
+                                <strong>Assess</strong>
+                                <small>Portfolio recommendation</small>
+                            </article>
+                        </div>
+
+                        <div class="radar-result-intro">
+                            <div>
+                                <strong>Board output</strong>
+                                <span>Executive summary, radar map, linked sources, saved runs, and accumulated trends.</span>
+                            </div>
+                            <span class="radar-result-badge"><i class="fas fa-bullseye" aria-hidden="true"></i> Radar view</span>
+                        </div>
+
+                        <div id="technologyRadarLoading" class="radar-loading radar-hidden">
+                            <div class="radar-loader"></div>
+                            <div>
+                                <h3>Building the radar</h3>
+                                <p>Collecting sources, extracting signals, and arranging entries into rings and quadrants.</p>
+                            </div>
+                        </div>
+
+                        <div id="technologyRadarEmpty" class="radar-empty">
+                            <h3>No radar generated yet</h3>
+                            <p>Run the form to produce a Thoughtworks-style radar adapted for the Innovation Center.</p>
+                        </div>
+
+                        <div id="technologyRadarResults" class="radar-results radar-hidden"></div>
+                    </section>
+                </aside>
+            </section>
+        </main>
+    </div>
+
+    <script src="/site/ic-technology-radar.js?v=20260811d"></script>
+</body>
+</html>

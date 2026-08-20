@@ -1,0 +1,31 @@
+{
+  "$schema": "../../webapp/node_modules/wrangler/config-schema.json",
+  "name": "template-app",
+  "compatibility_date": "2026-07-10",
+  "pages_build_output_dir": "../../webapp/dist",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "APP_NAME": "template-app",
+    "APP_ENV": "dev",
+    "APP_RUNTIME": "cloudflare",
+    "API_BASE_PATH": "/api",
+    "DB_BINDING": "DB",
+    "BUCKET_BINDING": "R2",
+    "AI_ENABLED": "false"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "template-app-dev",
+      "database_id": "local-dev-placeholder"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "template-app-documents"
+    }
+  ]
+}

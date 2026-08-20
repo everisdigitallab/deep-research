@@ -1,0 +1,23 @@
+
+
+cd /root/deep_radar/gpt-researcher
+source deep_radar/bin/activate
+python -m uvicorn main:app --reload
+
+
+
+
+Se você já está no ambiente correto, rode:
+
+cd /root/deep_radar/gpt-researcher
+python -m uvicorn main:app --reload
+
+Depois abra:
+
+http://localhost:8000
+
+
+
+cd /root/deep_radar/gpt-researcher
+source deep_radar/bin/activate
+python -m uvicorn main:app --reload

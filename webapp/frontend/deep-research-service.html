@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Deep Research Service</title>
+    <meta name="description" content="Test the reusable Deep Research Service endpoint with structured or free-form outputs.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="./static/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/site/innovation-theme.css">
+    <link rel="stylesheet" href="/site/deep-research-service.css">
+</head>
+<body>
+    <div class="service-shell">
+        <header class="service-topbar">
+            <a class="service-brand" href="/">
+                <span class="service-brand-mark">DR</span>
+                <span class="service-brand-copy">
+                    <strong>Deep Research Service</strong>
+                    <span>Reusable research core for other projects and apps</span>
+                </span>
+            </a>
+            <nav class="service-nav">
+                <a href="/"><i class="fas fa-house"></i> Workspace Home</a>
+                <a href="/classic-research"><i class="fas fa-flask"></i> Classic Research UI</a>
+                <a href="/ic-technology-radar"><i class="fas fa-compass-drafting"></i> IC Technology Radar</a>
+            </nav>
+        </header>
+
+        <section class="service-hero">
+            <div class="service-hero-copy">
+                <span class="service-kicker">Reusable API surface</span>
+                <h1>Expose deep research as a service, not only as a page.</h1>
+                <p>
+                    Use this playground to send a JSON payload into the project's deep research core and inspect
+                    the returned output. The response can come back as a markdown report, structured JSON, or both.
+                </p>
+                <div class="service-hero-actions">
+                    <a class="radar-button radar-button-primary" href="#service-playground">
+                        <i class="fas fa-terminal"></i>
+                        <span>Test the endpoint</span>
+                    </a>
+                    <a class="radar-button radar-button-muted" href="/.well-known/agent-discovery.json">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span>Agent discovery</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="service-proof-grid">
+                <article class="service-proof-card">
+                    <strong>One core, many consumers</strong>
+                    <span>Other products can call one endpoint and choose the output mode they need.</span>
+                </article>
+                <article class="service-proof-card">
+                    <strong>Structured or open-ended</strong>
+                    <span>Return a full research report, a strict JSON response, or both in the same run.</span>
+                </article>
+                <article class="service-proof-card">
+                    <strong>Grounded in sources</strong>
+                    <span>Keep visited URLs, images, costs, and local-document usage visible in the response.</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="service-overview">
+            <article class="service-overview-card">
+                <span class="service-kicker">Endpoint</span>
+                <h2><code>POST /api/deep-research-service</code></h2>
+                <p>Receives a JSON payload and executes the research flow with optional structured formatting.</p>
+            </article>
+            <article class="service-overview-card">
+                <span class="service-kicker">History</span>
+                <h2><code>GET /api/deep-research-service/runs</code></h2>
+                <p>Lists recent runs saved by the service so you can inspect requests and outputs later.</p>
+            </article>
+        </section>
+
+        <section class="service-workbench" id="service-playground">
+            <div class="service-panel service-input-panel">
+                <div class="service-panel-head">
+                    <div>
+                        <span class="service-kicker">Payload builder</span>
+                        <h2>Input</h2>
+                    </div>
+                    <p>Start from an example, tweak the JSON, and run the service.</p>
+                </div>
+
+                <section class="service-card-block service-simple-chat-block">
+                    <div class="service-card-head">
+                        <strong>Simple chat input</strong>
+                        <span class="service-inline-endpoint"><code>POST /api/deep-research-service/simple</code></span>
+                    </div>
+                    <p class="service-muted">Use a single message as input, without building the full JSON payload.</p>
+                    <label class="service-field service-field-compact">
+                        <span>Message</span>
+                        <textarea id="simpleChatPrompt" spellcheck="false"></textarea>
+                    </label>
+                    <div class="service-simple-actions">
+                        <button id="runSimpleChatButton" class="radar-button radar-button-primary" type="button">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Run simple chat</span>
+                        </button>
+                        <button id="copySimpleToPayloadButton" class="radar-button radar-button-muted" type="button">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>Use in payload builder</span>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="service-template-row">
+                    <button class="service-template-button" data-template="report" type="button">Report example</button>
+                    <button class="service-template-button" data-template="structured" type="button">Structured example</button>
+                    <button class="service-template-button" data-template="hybrid" type="button">Hybrid example</button>
+                </div>
+
+                <label class="service-field">
+                    <span>Request payload</span>
+                    <textarea id="servicePayload" spellcheck="false"></textarea>
+                </label>
+
+                <div class="service-side-by-side">
+                    <section class="service-card-block">
+                        <div class="service-card-head">
+                            <strong>Local documents</strong>
+                            <button id="refreshFilesButton" class="service-mini-button" type="button">
+                                <i class="fas fa-rotate"></i>
+                                <span>Refresh</span>
+                            </button>
+                        </div>
+                        <p class="service-muted">Click a file to add or remove it from <code>local_documents</code> in the payload.</p>
+                        <div id="serviceFilesList" class="service-chip-grid"></div>
+                    </section>
+
+                    <section class="service-card-block">
+                        <div class="service-card-head">
+                            <strong>cURL preview</strong>
+                            <button id="validatePayloadButton" class="service-mini-button" type="button">
+                                <i class="fas fa-check"></i>
+                                <span>Validate JSON</span>
+                            </button>
+                        </div>
+                        <pre id="serviceCurlPreview" class="service-code-block"></pre>
+                    </section>
+                </div>
+
+                <div class="service-action-row">
+                    <button id="runServiceButton" class="radar-button radar-button-primary" type="button">
+                        <i class="fas fa-play"></i>
+                        <span>Run service</span>
+                    </button>
+                    <span id="serviceStatus" class="service-status">Ready to send a request.</span>
+                </div>
+            </div>
+
+            <div class="service-panel service-output-panel">
+                <div class="service-panel-head">
+                    <div>
+                        <span class="service-kicker">Response viewer</span>
+                        <h2>Output</h2>
+                    </div>
+                    <p>Inspect the response payload, research metadata, and the latest saved runs.</p>
+                </div>
+
+                <div class="service-metrics-grid">
+                    <article class="service-metric-card">
+                        <span>Request ID</span>
+                        <strong id="metricRequestId">-</strong>
+                    </article>
+                    <article class="service-metric-card">
+                        <span>Output format</span>
+                        <strong id="metricOutputFormat">-</strong>
+                    </article>
+                    <article class="service-metric-card">
+                        <span>Source URLs</span>
+                        <strong id="metricSourceCount">0</strong>
+                    </article>
+                    <article class="service-metric-card">
+                        <span>Research cost</span>
+                        <strong id="metricCost">0</strong>
+                    </article>
+                </div>
+
+                <section class="service-card-block">
+                    <div class="service-card-head">
+                        <strong>Service response JSON</strong>
+                    </div>
+                    <pre id="serviceResponseJson" class="service-code-block service-response-block">Run a request to inspect the response.</pre>
+                </section>
+
+                <section class="service-card-block">
+                    <div class="service-card-head">
+                        <strong>Report preview</strong>
+                    </div>
+                    <pre id="serviceReportPreview" class="service-report-block">Markdown report output will appear here when available.</pre>
+                </section>
+
+                <section class="service-card-block">
+                    <div class="service-card-head">
+                        <strong>Recent saved runs</strong>
+                    </div>
+                    <div id="serviceRunsList" class="service-runs-list"></div>
+                </section>
+            </div>
+        </section>
+    </div>
+
+    <script src="/site/deep-research-service.js"></script>
+</body>
+</html>
